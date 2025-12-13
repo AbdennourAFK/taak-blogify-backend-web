@@ -18,8 +18,14 @@ class ProfileController extends Controller
      */
     public function show(User $user): View
     {
+        $posts = $user->posts()
+            ->published()
+            ->latest('published_at')
+            ->paginate(10);
+
         return view('profile.show', [
             'user' => $user,
+            'posts' => $posts,
         ]);
     }
 
