@@ -8,6 +8,9 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+// Public profile page
+Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
+
 // Authentication routes (login, register, password reset, etc.)
 require __DIR__.'/auth.php';
 
@@ -17,9 +20,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
-    // User profile routes (only authenticated user can access their own profile)
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    // User profile edit routes (only authenticated user can access their own profile)
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/edit', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

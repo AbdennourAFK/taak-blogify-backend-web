@@ -3,14 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    /**
+     * Display the public profile page.
+     */
+    public function show(User $user): View
+    {
+        return view('profile.show', [
+            'user' => $user,
+        ]);
+    }
+
     /**
      * Display the user's profile form.
      */
@@ -26,13 +38,31 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $validated = $request->validated();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Handle profile photo upload
+        if ($request->hasFile('profile_photo')) {
+            // Delete old profile photo if exists
+            if ($user->profile_photo) {
+                Storage::disk('public')->delete('profiles/' . $user->profile_photo);
+            }
+
+            // Store new profile photo
+            $photoPath = $request->file('profile_photo')->store('profiles', 'public');
+            $validated['profile_photo'] = basename($photoPath);
+        } else {
+            // Remove profile_photo from validated data if not uploaded
+            unset($validated['profile_photo']);
         }
 
-        $request->user()->save();
+        $user->fill($validated);
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
@@ -47,6 +77,11 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        // Delete profile photo if exists
+        if ($user->profile_photo) {
+            Storage::disk('public')->delete('profiles/' . $user->profile_photo);
+        }
 
         Auth::logout();
 
