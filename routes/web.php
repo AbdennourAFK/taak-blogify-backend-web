@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -10,6 +11,10 @@ Route::get('/', function () {
 
 // Public profile page
 Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
+
+// Public posts routes
+Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+Route::get('/posts/{slug}', [PostController::class, 'show'])->name('posts.show');
 
 // Authentication routes (login, register, password reset, etc.)
 require __DIR__.'/auth.php';
@@ -28,5 +33,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Admin routes (protected with admin middleware)
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Admin routes will be added here in future steps
+    Route::resource('posts', \App\Http\Controllers\Admin\PostController::class);
 });
