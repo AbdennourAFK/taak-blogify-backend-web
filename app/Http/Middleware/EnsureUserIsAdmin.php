@@ -17,7 +17,7 @@ class EnsureUserIsAdmin
     public function handle(Request $request, Closure $next): Response
     {
         if (! Auth::check() || ! Auth::user()->isAdmin()) {
-            return redirect('/')->with('error', 'You do not have permission to access this page.');
+            return redirect('/')->with('error', 'Access denied.');
         }
 
         return $next($request);

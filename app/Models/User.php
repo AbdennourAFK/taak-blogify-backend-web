@@ -13,6 +13,12 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
+     * User role constants.
+     */
+    public const ROLE_USER = 'user';
+    public const ROLE_ADMIN = 'admin';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -59,7 +65,7 @@ class User extends Authenticatable
      */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->role === self::ROLE_ADMIN;
     }
 
     /**
