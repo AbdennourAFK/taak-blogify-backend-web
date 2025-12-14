@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -12,6 +14,13 @@ Route::get('/', function () {
 // Public posts routes
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{slug}', [PostController::class, 'show'])->name('posts.show');
+
+// Public FAQ route
+Route::get('/faq', [FaqController::class, 'index'])->name('faq.index');
+
+// Public contact routes
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 // Authentication routes (login, register, password reset, etc.)
 require __DIR__.'/auth.php';
@@ -38,4 +47,8 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
     Route::post('users/{user}/promote', [\App\Http\Controllers\Admin\UserController::class, 'promote'])->name('users.promote');
     Route::post('users/{user}/demote', [\App\Http\Controllers\Admin\UserController::class, 'demote'])->name('users.demote');
+    
+    // FAQ management routes
+    Route::resource('faq-categories', \App\Http\Controllers\Admin\FaqCategoryController::class);
+    Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);
 });
