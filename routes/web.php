@@ -9,9 +9,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Public profile page
-Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
-
 // Public posts routes
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{slug}', [PostController::class, 'show'])->name('posts.show');
@@ -26,12 +23,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     // User profile edit routes (only authenticated user can access their own profile)
+    // Must be defined before /profile/{user} to avoid route conflict
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/edit', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Public profile page (must be after /profile/edit to avoid route conflict)
+Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
+
 // Admin routes (protected with admin middleware)
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('posts', \App\Http\Controllers\Admin\PostController::class);
+    Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+    Route::post('users/{user}/promote', [\App\Http\Controllers\Admin\UserController::class, 'promote'])->name('users.promote');
+    Route::post('users/{user}/demote', [\App\Http\Controllers\Admin\UserController::class, 'demote'])->name('users.demote');
 });

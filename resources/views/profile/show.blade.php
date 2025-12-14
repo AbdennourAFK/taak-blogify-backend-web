@@ -20,7 +20,12 @@
                                 {{ $user->username ?? $user->name }}
                             </h1>
                             @if ($user->name && $user->username)
-                                <p class="text-gray-600 mb-4">{{ $user->name }}</p>
+                                <p class="text-gray-600 mb-2">{{ $user->name }}</p>
+                            @endif
+                            @if ($user->birthday)
+                                <p class="text-sm text-gray-500 mb-2">
+                                    Birthday: {{ $user->birthday->format('F d, Y') }}
+                                </p>
                             @endif
                             <div class="text-sm text-gray-500">
                                 <span class="font-medium">{{ $user->posts()->published()->count() }}</span> published {{ Str::plural('post', $user->posts()->published()->count()) }}

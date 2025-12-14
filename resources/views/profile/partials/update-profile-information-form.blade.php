@@ -13,7 +13,7 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="mt-6 space-y-6">
         @csrf
         @method('patch')
 
@@ -45,6 +45,40 @@
                     @endif
                 </div>
             @endif
+        </div>
+
+        <div>
+            <x-input-label for="username" :value="__('Username')" />
+            <x-text-input id="username" name="username" type="text" class="mt-1 block w-full" :value="old('username', $user->username)" autocomplete="username" />
+            <p class="mt-1 text-sm text-gray-500">{{ __('Optional. Used for your public profile display.') }}</p>
+            <x-input-error class="mt-2" :messages="$errors->get('username')" />
+        </div>
+
+        <div>
+            <x-input-label for="birthday" :value="__('Birthday')" />
+            <x-text-input id="birthday" name="birthday" type="date" class="mt-1 block w-full" :value="old('birthday', $user->birthday ? $user->birthday->format('Y-m-d') : '')" />
+            <p class="mt-1 text-sm text-gray-500">{{ __('Optional.') }}</p>
+            <x-input-error class="mt-2" :messages="$errors->get('birthday')" />
+        </div>
+
+        <div>
+            <x-input-label for="profile_photo" :value="__('Profile Photo')" />
+            @if ($user->profile_photo)
+                <div class="mt-2 mb-2">
+                    <img src="{{ asset('storage/profiles/' . $user->profile_photo) }}" alt="Current profile photo" class="h-20 w-20 rounded-full object-cover">
+                    <p class="text-sm text-gray-500 mt-1">{{ __('Current photo') }}</p>
+                </div>
+            @endif
+            <input id="profile_photo" name="profile_photo" type="file" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" accept="image/*" />
+            <p class="mt-1 text-sm text-gray-500">{{ __('Max 2MB. Allowed formats: JPEG, PNG, JPG, GIF. Leave empty to keep current photo.') }}</p>
+            <x-input-error class="mt-2" :messages="$errors->get('profile_photo')" />
+        </div>
+
+        <div>
+            <x-input-label for="about_me" :value="__('About Me')" />
+            <textarea id="about_me" name="about_me" rows="4" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ old('about_me', $user->about_me) }}</textarea>
+            <p class="mt-1 text-sm text-gray-500">{{ __('Optional. Tell others about yourself. Max 1000 characters.') }}</p>
+            <x-input-error class="mt-2" :messages="$errors->get('about_me')" />
         </div>
 
         <div class="flex items-center gap-4">
