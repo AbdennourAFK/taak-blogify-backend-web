@@ -18,6 +18,12 @@
                 </div>
             @endif
 
+            @if (session('error'))
+                <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <div class="overflow-x-auto">
@@ -25,13 +31,13 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        ID
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Name
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Email
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Username
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Role
@@ -48,6 +54,11 @@
                                 @forelse ($users as $user)
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-500">
+                                                {{ $user->id }}
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm font-medium text-gray-900">
                                                 {{ $user->name }}
                                             </div>
@@ -55,11 +66,6 @@
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm text-gray-500">
                                                 {{ $user->email }}
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-500">
-                                                {{ $user->username ?? 'N/A' }}
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
@@ -79,21 +85,39 @@
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            @if ($user->isAdmin())
-                                                <form action="{{ route('admin.users.demote', $user) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    <button type="submit" class="text-orange-600 hover:text-orange-900" onclick="return confirm('Are you sure you want to demote this admin to regular user?')">
-                                                        Demote
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <form action="{{ route('admin.users.promote', $user) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    <button type="submit" class="text-indigo-600 hover:text-indigo-900" onclick="return confirm('Are you sure you want to promote this user to admin?')">
-                                                        Promote
-                                                    </button>
-                                                </form>
-                                            @endif
+                                            <div class="flex items-center justify-end gap-3">
+                                                @if (!$user->isAdmin() && $user->id !== auth()->id())
+                                                    <form action="{{ route('admin.users.promote', $user) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        <button type="submit" class="text-indigo-600 hover:text-indigo-900" onclick="return confirm('Are you sure you want to promote this user to admin?')">
+                                                            Promote
+                                                        </button>
+                                                    </form>
+                                                @endif
+
+                                                @if ($user->isAdmin() && $user->id !== auth()->id())
+                                                    <form action="{{ route('admin.users.demote', $user) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        <button type="submit" class="text-orange-600 hover:text-orange-900" onclick="return confirm('Are you sure you want to demote this admin to regular user?')">
+                                                            Demote
+                                                        </button>
+                                                    </form>
+                                                @endif
+
+                                                <a href="{{ route('admin.users.edit', $user) }}" class="text-indigo-600 hover:text-indigo-900">
+                                                    Edit
+                                                </a>
+
+                                                @if ($user->id !== auth()->id())
+                                                    <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this user? This action cannot be undone.')">
+                                                            Delete
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
