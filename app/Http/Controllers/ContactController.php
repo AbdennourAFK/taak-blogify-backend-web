@@ -27,7 +27,7 @@ class ContactController extends Controller
         $contact = Contact::create($request->validated());
 
         // Send email to admin
-        $adminEmail = config('mail.from.address');
+        $adminEmail = env('ADMIN_EMAIL', config('mail.from.address'));
         Mail::to($adminEmail)->send(new ContactSubmitted($contact));
 
         return redirect()->route('contact.index')

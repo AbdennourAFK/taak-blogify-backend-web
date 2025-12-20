@@ -12,7 +12,7 @@ Route::get('/', [LandingController::class, 'index'])->name('home');
 
 // Public posts routes
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
-Route::get('/posts/{slug}', [PostController::class, 'show'])->name('posts.show');
+Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
 
 // Public FAQ route
 Route::get('/faq', [FaqController::class, 'index'])->name('faq.index');

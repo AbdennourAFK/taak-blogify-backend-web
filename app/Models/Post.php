@@ -79,4 +79,13 @@ class Post extends Model
 
         return $slug;
     }
+
+    /**
+     * Retrieve the model for route model binding.
+     * Uses slug instead of the default key (id).
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 }

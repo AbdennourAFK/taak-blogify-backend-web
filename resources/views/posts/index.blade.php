@@ -11,13 +11,13 @@
                     @foreach ($posts as $post)
                         <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                             @if ($post->image)
-                                <a href="{{ route('posts.show', $post->slug) }}">
+                                <a href="{{ route('posts.show', $post) }}">
                                     <img src="{{ asset('storage/posts/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-48 object-cover">
                                 </a>
                             @endif
                             <div class="p-6">
                                 <h2 class="text-xl font-semibold text-gray-900 mb-2">
-                                    <a href="{{ route('posts.show', $post->slug) }}" class="hover:text-indigo-600">
+                                    <a href="{{ route('posts.show', $post) }}" class="hover:text-indigo-600">
                                         {{ $post->title }}
                                     </a>
                                 </h2>
@@ -31,7 +31,7 @@
                                     <span>{{ $post->published_at->format('M d, Y') }}</span>
                                 </div>
                                 <div class="mt-4">
-                                    <a href="{{ route('posts.show', $post->slug) }}" class="text-indigo-600 hover:text-indigo-800 font-medium">
+                                    <a href="{{ route('posts.show', $post) }}" class="text-indigo-600 hover:text-indigo-800 font-medium">
                                         Read more →
                                     </a>
                                 </div>

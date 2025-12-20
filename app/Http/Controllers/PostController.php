@@ -23,12 +23,14 @@ class PostController extends Controller
     /**
      * Display the specified post.
      */
-    public function show(string $slug): View
+    public function show(Post $post): View
     {
-        $post = Post::with('user')
-            ->where('slug', $slug)
-            ->published()
-            ->firstOrFail();
+        // Ensure the post is published
+        if (!$post->isPublished()) {
+            abort(404);
+        }
+
+        $post->load('user');
 
         return view('posts.show', compact('post'));
     }
