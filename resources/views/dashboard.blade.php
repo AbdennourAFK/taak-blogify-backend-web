@@ -9,8 +9,21 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <!-- Welcome Message -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    Welcome back, {{ auth()->user()->name }}!
+                <div class="p-6">
+                    <div class="flex items-center gap-4">
+                        @if (auth()->user()->profile_photo)
+                            <img src="{{ asset('storage/profiles/' . auth()->user()->profile_photo) }}" alt="{{ auth()->user()->name }}" class="w-16 h-16 rounded-full object-cover border-2 border-gray-200">
+                        @else
+                            <div class="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center border-2 border-gray-200">
+                                <span class="text-2xl text-gray-600 font-semibold">
+                                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                </span>
+                            </div>
+                        @endif
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-900">Welcome back, {{ auth()->user()->name }}!</h2>
+                        </div>
+                    </div>
                 </div>
             </div>
 
