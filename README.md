@@ -1,4 +1,4 @@
-# Taak Blogify
+ # Taak Blogify
 
 A robust Laravel-based blogging platform with social features including posts, comments, likes, and private messaging.
 
