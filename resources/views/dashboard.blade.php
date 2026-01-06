@@ -1,33 +1,41 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Dashboard
-        </h2>
-    </x-slot>
+@php
+    // Automatically select layout based on user role
+    $layout = auth()->user()->isAdmin() ? 'layouts.admin' : 'layouts.user';
+@endphp
 
+@extends($layout)
+
+@section('header')
+    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        Dashboard
+    </h2>
+@endsection
+
+@section('content')
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <!-- Welcome Message -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <div class="flex items-center gap-4">
-                        @if (auth()->user()->profile_photo)
-                            <img src="{{ asset('storage/profiles/' . auth()->user()->profile_photo) }}" alt="{{ auth()->user()->name }}" class="w-16 h-16 rounded-full object-cover border-2 border-gray-200">
+                        @if ($user->profile_photo)
+                            <img src="{{ asset('storage/profiles/' . $user->profile_photo) }}" alt="{{ $user->name }}" class="w-16 h-16 rounded-full object-cover border-2 border-gray-200">
                         @else
                             <div class="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center border-2 border-gray-200">
                                 <span class="text-2xl text-gray-600 font-semibold">
-                                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                    {{ strtoupper(substr($user->name, 0, 1)) }}
                                 </span>
                             </div>
                         @endif
                         <div>
-                            <h2 class="text-lg font-semibold text-gray-900">Welcome back, {{ auth()->user()->name }}!</h2>
+                            <h2 class="text-lg font-semibold text-gray-900">Welcome back, {{ $user->name }}!</h2>
+                            <p class="text-sm text-gray-500 mt-1">{{ $user->isAdmin() ? 'Administrator' : 'User' }}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            @if(auth()->user()->isAdmin())
+            @if($user->isAdmin())
                 <!-- Admin Section -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
@@ -58,7 +66,7 @@
                             <a href="{{ route('profile.edit') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                 Edit Profile
                             </a>
-                            <a href="{{ route('profile.show', auth()->user()) }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                            <a href="{{ route('profile.show', $user) }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                 View Public Profile
                             </a>
                         </div>
@@ -66,14 +74,10 @@
                 </div>
 
                 <!-- User's Latest Posts -->
-                @php
-                    $userPosts = auth()->user()->posts()->latest()->take(5)->get();
-                    $totalPostsCount = auth()->user()->posts()->count();
-                @endphp
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Your Latest Posts</h3>
-                        @if($userPosts->count() > 0)
+                @if(isset($userPosts) && $userPosts->count() > 0)
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Your Latest Posts</h3>
                             <div class="space-y-3">
                                 @foreach($userPosts as $post)
                                     <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
@@ -102,22 +106,27 @@
                                     </div>
                                 @endforeach
                             </div>
-                            @if($totalPostsCount > 5)
+                            @if(isset($totalPostsCount) && $totalPostsCount > 5)
                                 <div class="mt-4">
-                                    <a href="{{ route('profile.show', auth()->user()) }}" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm">
+                                    <a href="{{ route('profile.show', $user) }}" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm">
                                         View all {{ $totalPostsCount }} posts →
                                     </a>
                                 </div>
                             @endif
-                        @else
+                        </div>
+                    </div>
+                @elseif(isset($userPosts) && $userPosts->count() === 0)
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Your Latest Posts</h3>
                             <div class="text-center py-8 text-gray-500">
                                 <p>You haven't created any posts yet.</p>
                                 <p class="text-sm mt-2">Posts you create will appear here.</p>
                             </div>
-                        @endif
+                        </div>
                     </div>
-                </div>
+                @endif
             @endif
         </div>
     </div>
-</x-app-layout>
+@endsection

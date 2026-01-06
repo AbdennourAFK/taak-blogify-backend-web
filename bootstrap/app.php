@@ -14,6 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
         ]);
+        
+        // Apply SelectLayout middleware to all authenticated routes
+        $middleware->web(append: [
+            \App\Http\Middleware\SelectLayout::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

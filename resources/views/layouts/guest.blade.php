@@ -47,6 +47,9 @@
                                         Admin Panel
                                     </a>
                                 @endif
+                                <a href="{{ route('messages.index') }}" class="text-base font-medium text-white hover:text-blue-100 transition px-2" style="color: white !important;">
+                                    Messages
+                                </a>
                                 <a href="{{ route('dashboard') }}" class="text-base font-medium text-white hover:text-blue-100 transition px-2" style="color: white !important;">
                                     Dashboard
                                 </a>
@@ -95,6 +98,9 @@
                                         Admin Panel
                                     </a>
                                 @endif
+                                <a href="{{ route('messages.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-blue-100 hover:bg-blue-700">
+                                    Messages
+                                </a>
                                 <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-blue-100 hover:bg-blue-700">
                                     Dashboard
                                 </a>

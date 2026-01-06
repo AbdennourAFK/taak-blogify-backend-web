@@ -45,6 +45,54 @@ class Post extends Model
     }
 
     /**
+     * Get the users who liked this post.
+     */
+    public function likes()
+    {
+        return $this->belongsToMany(User::class, 'post_likes')->withTimestamps();
+    }
+
+    /**
+     * Get the comments for this post.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class)->latest();
+    }
+
+    /**
+     * Get the number of likes for this post.
+     */
+    public function getLikesCountAttribute(): int
+    {
+        // If likes_count is already loaded via withCount, use it
+        if (isset($this->attributes['likes_count'])) {
+            return (int) $this->attributes['likes_count'];
+        }
+        
+        // Otherwise, count the relationship
+        return $this->likes()->count();
+    }
+
+    /**
+     * Check if a user has liked this post.
+     */
+    public function isLikedBy(?User $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        // If likes are already loaded, check the collection
+        if ($this->relationLoaded('likes')) {
+            return $this->likes->contains('id', $user->id);
+        }
+
+        // Otherwise, query the database
+        return $this->likes()->where('user_id', $user->id)->exists();
+    }
+
+    /**
      * Check if the post is published.
      *
      * @return bool
