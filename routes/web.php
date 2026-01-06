@@ -43,6 +43,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Comments
     Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::post('/comments/{comment}/save', [CommentController::class, 'toggleSave'])->name('comments.save');
 
     // Messages
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');

@@ -35,4 +35,19 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class);
     }
+    /**
+     * Get the users that saved this comment.
+     */
+    public function savedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'saved_comments')->withTimestamps();
+    }
+
+    /**
+     * Check if the comment is saved by the given user.
+     */
+    public function isSavedBy(User $user)
+    {
+        return $this->savedByUsers->contains($user);
+    }
 }

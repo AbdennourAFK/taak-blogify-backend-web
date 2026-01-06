@@ -107,4 +107,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Message::class, 'receiver_id');
     }
+
+    /**
+     * Get the comments saved by the user.
+     */
+    public function savedComments()
+    {
+        return $this->belongsToMany(Comment::class, 'saved_comments')->withTimestamps();
+    }
 }

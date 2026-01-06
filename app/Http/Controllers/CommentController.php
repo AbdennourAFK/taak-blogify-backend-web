@@ -38,4 +38,21 @@ class CommentController extends Controller
 
         return redirect()->back()->with('status', 'Comment deleted successfully.');
     }
+    /**
+     * Toggle the saved status of the comment for the authenticated user.
+     */
+    public function toggleSave(Comment $comment): RedirectResponse
+    {
+        $user = auth()->user();
+
+        if ($comment->isSavedBy($user)) {
+            $user->savedComments()->detach($comment);
+            $message = 'Comment unsaved successfully.';
+        } else {
+            $user->savedComments()->attach($comment);
+            $message = 'Comment saved successfully.';
+        }
+
+        return redirect()->back()->with('status', $message);
+    }
 }

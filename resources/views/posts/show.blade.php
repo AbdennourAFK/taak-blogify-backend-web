@@ -104,15 +104,23 @@
                                                 <span class="font-semibold text-gray-900">{{ $comment->user->name }}</span>
                                                 <span class="text-sm text-gray-500">{{ $comment->created_at->format('M d, Y g:i A') }}</span>
                                             </div>
-                                            @auth
-                                                @if ($comment->user_id === auth()->id() || auth()->user()->isAdmin())
-                                                    <form method="POST" action="{{ route('comments.destroy', $comment) }}" class="inline" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                                            <div class="flex items-center gap-2">
+                                                @auth
+                                                    <form method="POST" action="{{ route('comments.save', $comment) }}" class="inline">
                                                         @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                                        <button type="submit" class="{{ $comment->isSavedBy(auth()->user()) ? 'text-indigo-800 font-bold' : 'text-indigo-600 hover:text-indigo-800' }} text-sm">
+                                                            {{ $comment->isSavedBy(auth()->user()) ? 'Saved' : 'Save' }}
+                                                        </button>
                                                     </form>
-                                                @endif
-                                            @endauth
+                                                    @if ($comment->user_id === auth()->id() || auth()->user()->isAdmin())
+                                                        <form method="POST" action="{{ route('comments.destroy', $comment) }}" class="inline" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                                        </form>
+                                                    @endif
+                                                @endauth
+                                            </div>
                                         </div>
                                         <p class="text-gray-700 whitespace-pre-wrap">{{ $comment->content }}</p>
                                         
