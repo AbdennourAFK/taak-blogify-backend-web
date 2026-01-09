@@ -14,6 +14,7 @@ A robust Laravel-based blogging platform with social features including posts, c
 - **Private Messages**: Send private messages to other users.
 - **Admin Panel**: Manage posts, users, and FAQ sections.
 - **FAQ System**: Frequently asked questions managed by admins.
+- **Contact Form**: Users can submit inquiries via the contact page.
 
 ## Installation
 
@@ -36,8 +37,19 @@ A robust Laravel-based blogging platform with social features including posts, c
 4.  **Generate Key and Migrate**
     ```bash
     php artisan key:generate
-    php artisan migrate
+    php artisan migrate --seed
     ```
+
+    > **Note**: The `--seed` flag populates the database with admin accounts, test users, posts, and sample data.
+
+### Demo Credentials
+
+If you ran the seeder, you can login with:
+
+| Role | Email | Password |
+|------|-------|----------|
+| **Admin** | `admin@ehb.be` | `Password!321` |
+| **User** | `test@example.com` | `Test1234!` |
 
 5.  **Build Assets**
     ```bash
